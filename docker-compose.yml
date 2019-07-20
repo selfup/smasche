@@ -1,0 +1,23 @@
+version: '3.1'
+
+services:
+  lb:
+    image: dockercloud/haproxy
+    ports:
+      - 9000:80
+    links:
+      - smasche
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  manager:
+    image: registry.gitlab.com/selfup/gdsm:latest
+    environment:
+      - MANAGER=true
+  smasche:
+    depends_on:
+      - manager
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - UPLINK=manager:8081
