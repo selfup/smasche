@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/selfup/gdsm/gdsm"
+	"github.com/selfup/gdsm"
 )
 
 func main() {
@@ -13,7 +13,7 @@ func main() {
 	go gdsm.BootDaemon(daemon)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "workers, %q", daemon.Nodes())
+		fmt.Fprintf(w, "I AM A WORKER")
 	})
 
 	log.Fatal(http.ListenAndServe(":9000", nil))

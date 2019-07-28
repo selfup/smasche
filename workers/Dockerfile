@@ -2,11 +2,11 @@ FROM golang:alpine AS build
 
 ENV CGO_ENABLED=0 APP=smasche
 
-COPY . $GOPATH/src/github.com/selfup/$APP
+RUN apk add git --no-cache
+
+COPY ./workers $GOPATH/src/github.com/selfup/$APP
 
 WORKDIR $GOPATH/src/github.com/selfup/$APP
-
-RUN apk add git --no-cache
 
 RUN go get github.com/selfup/gdsm
 
