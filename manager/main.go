@@ -1,8 +1,8 @@
 package main
 
 import (
+	"fmt"
 	"log"
-	"net/http"
 	"sync"
 
 	"github.com/selfup/gdsm"
@@ -17,7 +17,7 @@ func main() {
 
 	idx := 0
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	h := func(ctx *fasthttp.RequestCtx) {
 		mutex.Lock()
 		dNode := balance(daemon, idx)
 		mutex.Unlock()
@@ -26,13 +26,15 @@ func main() {
 		_, body, err := fasthttp.Get(nil, proxyURL)
 		if err != nil {
 			log.Println("client get", err)
-			w.Write([]byte("500"))
+			fmt.Fprintf(ctx, "500")
 		}
 
-		w.Write(body)
-	})
+		fmt.Fprintf(ctx, string(body)+"\n")
+	}
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	if err := fasthttp.ListenAndServe(":8080", h); err != nil {
+		log.Fatalf("Error in ListenAndServe: %s", err)
+	}
 }
 
 func balance(daemon *gdsm.Operator, idx int) string {
