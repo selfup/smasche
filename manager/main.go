@@ -1,13 +1,12 @@
 package main
 
 import (
-	"io/ioutil"
 	"log"
 	"net/http"
 	"sync"
-	"time"
 
 	"github.com/selfup/gdsm"
+	"github.com/valyala/fasthttp"
 )
 
 func main() {
@@ -18,29 +17,15 @@ func main() {
 
 	idx := 0
 
-	tr := &http.Transport{
-		MaxIdleConns:    36604,
-		IdleConnTimeout: 3 * time.Second,
-	}
-
-	client := http.Client{Transport: tr}
-
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		mutex.Lock()
 		dNode := balance(daemon, idx)
 		mutex.Unlock()
 
-		res, err := client.Get("http://" + dNode + ":9000/")
+		proxyURL := "http://" + dNode + ":9000/"
+		_, body, err := fasthttp.Get(nil, proxyURL)
 		if err != nil {
 			log.Println("client get", err)
-			w.Write([]byte("500"))
-		}
-
-		defer res.Body.Close()
-
-		body, err := ioutil.ReadAll(res.Body)
-		if err != nil {
-			log.Println("body read", err)
 			w.Write([]byte("500"))
 		}
 

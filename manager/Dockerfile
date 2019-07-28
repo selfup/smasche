@@ -6,6 +6,8 @@ RUN apk add git --no-cache
 
 RUN go get github.com/selfup/gdsm
 
+RUN go get github.com/valyala/fasthttp
+
 COPY ./manager $GOPATH/src/github.com/selfup/$APP
 
 WORKDIR $GOPATH/src/github.com/selfup/$APP

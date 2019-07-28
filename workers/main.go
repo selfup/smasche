@@ -13,7 +13,7 @@ func main() {
 	go gdsm.BootDaemon(daemon)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "I AM A WORKER")
+		fmt.Fprintf(w, "{}")
 	})
 
 	log.Fatal(http.ListenAndServe(":9000", nil))

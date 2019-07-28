@@ -2,6 +2,6 @@
 
 set -e
 
-ab -n 20000 -c 200 http://0.0:8080/ > .results
+ab -n 1000 -c 50 http://0.0:8080/ > .results
 
 cat .results | grep '#/sec'
