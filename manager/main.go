@@ -19,7 +19,7 @@ func main() {
 	idx := 0
 
 	tr := &http.Transport{
-		MaxIdleConns:    1024,
+		MaxIdleConns:    36604,
 		IdleConnTimeout: 3 * time.Second,
 	}
 
@@ -28,7 +28,6 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		mutex.Lock()
 		dNode := balance(daemon, idx)
-		log.Println("DNODE", dNode)
 		mutex.Unlock()
 
 		res, err := client.Get("http://" + dNode + ":9000/")
